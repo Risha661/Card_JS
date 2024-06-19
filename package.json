@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "imask": "^7.6.1",
+    "redom": "^4.1.5"
+  },
+  "name": "card_lvl_1",
+    "devDependencies": {
+    "parcel": "^2.12.0",
+    "process": "^0.11.10"
+  },
+  "scripts": {
+    "dev": "parcel ./credit_card-1lvl/index.html"
+  },
+  "author": "Risha Knyazeva",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "ISC",
+  "description": ""
+}
