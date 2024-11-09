@@ -1,139 +1,192 @@
 import { el, mount, setChildren } from "https://redom.js.org/redom.es.min.js";
 
-  const wrapper = el('div', {className: 'wrapper'});
-  const card = el('div', {className: 'card'});
+import {
+  validateCVV,
+  validateCardHolder,
+  validateCardNumber,
+} from "./js/validate.js";
+import "./js/script.js";
 
-  const cardHeader = el('p', 'Secure Checkout', { className: 'secure' });
-  const cardInfo = el('div', { className: 'credit-card' });
-  const cardNumber = el('span', 'xxxx xxxx xxxx xxxx', {
-    className: 'card__number'});
-  
-  const cardPersonal = el('div', { className: 'card__personal' });
-  const cardName = el('span', { className: 'card__name' }, 'John Doe');
-  const cardDate = el('span', { className: 'card__date' }, '12/34');
-  const form = el('form', { className: 'form', id: 'form', action: '#' });
+const a = "asdf";
+console.log(a);
 
-  const holderWrapDiv = el(
-    'div',
-    {
-      className: 'form__input-wrap form__input-wrap_holder',
+const wrapper = el("div", { className: "wrapper" });
+const card = el("div", { className: "card" });
+
+const cardHeader = el("p", "Secure Checkout", { className: "secure" });
+const cardInfo = el("div", { className: "credit-card" });
+const cardNumber = el("span", "xxxx xxxx xxxx xxxx", {
+  className: "card__number",
+});
+
+const cardPersonal = el("div", { className: "card__personal" });
+const cardName = el("span", { className: "card__name" }, "John Doe");
+const cardDate = el("span", { className: "card__date" }, "12/34");
+const form = el("form", { className: "form", id: "form", action: "#" });
+
+const holderWrapDiv = el(
+  "div",
+  {
+    className: "form__input-wrap form__input-wrap_holder",
+  },
+  [el("label", { className: "form__label form__holder-label" }, "Card Holder")]
+);
+
+const holderInput = el("input", {
+  id: "card_holder",
+  type: "text",
+  class: "input input__holder",
+});
+
+const numberWrap = el(
+  "div",
+  {
+    className: "form__input-wrap form__input-wrap_number",
+  },
+  [
+    el("label", {
+      className: "form__label form__number-label",
+      textContent: "Card Number",
+    }),
+  ]
+);
+const numberInput = el("input", {
+  id: "card_number",
+  type: "text",
+  class: "input input__number",
+});
+
+const dateWrapDiv = el(
+  "div",
+  { className: "form__input-wrap form__input-wrap_date" },
+  [el("label", { className: "form__label form__date-label" }, "Card Expiry")]
+);
+const expiryCardInput = el("input", {
+  id: "card_expiry",
+  type: "text",
+  className: "input input__date",
+});
+
+const cvvWrap = el(
+  "div",
+  { className: "form__input-wrap form__input-wrap_cvv" },
+  [el("label", { className: "form__label form__cvv-label" }, "CVV")]
+);
+
+const cvvInputCard = el("input", {
+  id: "card_cvv",
+  type: "text",
+  className: "input input__cvv",
+});
+
+const submitBtn = el("button", { className: "form__button" }, "CHECK OUT");
+
+const maskNumber = IMask(numberInput, {
+  mask: "0000 0000 0000 0000",
+  blocks: {
+    0: {
+      mask: /^\d$/,
     },
-    [el('label', { className: 'form__label form__holder-label' }, 'Card Holder')]
-  );
-
-  const holderInput = el('input', {
-    id: 'card_holder',
-    type: 'text',
-    class: 'input input__holder',
-  });
-
-  const numberWrap = el(
-    'div',
-    {
-      className: 'form__input-wrap form__input-wrap_number',
+    1: {
+      mask: /^\d$/,
     },
-    [
-      el('label', {
-        className: 'form__label form__number-label',
-        textContent: 'Card Number',
-      }),
-    ]
-  );
-  const numberInput = el('input', {
-    id: 'card_number',
-    type: 'text',
-    class: 'input input__number',
-  });
-
-  const dateWrapDiv = el(
-    'div',
-    { className: 'form__input-wrap form__input-wrap_date' },
-    [el('label', { className: 'form__label form__date-label' }, 'Card Expiry')]
-  );
-  const expiryCardInput = el('input', {
-    id: 'card_expiry',
-    type: 'text',
-    className: 'input input__date',
-  });
-
-  const cvvWrap = el(
-    'div', { className: 'form__input-wrap form__input-wrap_cvv' }, [el('label', { className: 'form__label form__cvv-label' }, 'CVV')]
-  );
-
-  const cvvInputCard = el('input', {
-    id: 'card_cvv',
-    type: 'text',
-    className: 'input input__cvv',
-  });
-
-  const submitBtn = el('button', { className: 'form__button' }, 'CHECK OUT');
-
-  const maskNumber = IMask(numberInput, {
-    mask: '0000 0000 0000 0000',
-    blocks: {
-      0: {
-        mask: /^\d$/,
-      },
-      1: {
-        mask: /^\d$/,
-      },
-      2: {
-        mask: /^\d$/,
-      },
-      3: {
-        mask: /^\d$/,
-      },
-    }
-  });
-
-  numberInput.addEventListener('input', (e) => {
-    e.preventDefault();
-    cardNumber.textContent =  maskNumber.unmaskedValue;
-  });
-
-  const maskNameOptions = {mask: /^[a-zA-Z\s]+$/};
-  const maskName = IMask(holderInput, maskNameOptions);
-  holderInput.addEventListener('input', (e) => {
-    e.preventDefault();
-    cardName.textContent = maskName.unmaskedValue;
-  });
-
-  const maskExpiry = IMask(expiryCardInput, {
-    mask: 'MM/YY',
-    blocks: {
-      MM: {
-        mask: IMask.MaskedRange,
-        from: 1,
-        to: 12,
-      },
-      YY: {
-        mask: IMask.MaskedRange,
-        from: 24,
-        to: 29,
-      },
+    2: {
+      mask: /^\d$/,
     },
-  });
+    3: {
+      mask: /^\d$/,
+    },
+  },
+});
 
-  expiryCardInput.addEventListener('input', (e) => {
-    e.preventDefault();
-    cardDate.textContent = expiryCardInput.value;
-  });
+numberInput.addEventListener("input", (e) => {
+  e.preventDefault();
+  cardNumber.textContent = maskNumber.unmaskedValue;
+});
 
-  IMask(cvvInputCard, {mask: '000'})
+const maskNameOptions = { mask: /^[a-zA-Z\s]+$/ };
+const maskName = IMask(holderInput, maskNameOptions);
+holderInput.addEventListener("input", (e) => {
+  e.preventDefault();
+  cardName.textContent = maskName.unmaskedValue;
+});
 
-  mount(wrapper, card);
-  mount(holderWrapDiv, holderInput);
-  mount(numberWrap, numberInput);
-  mount(dateWrapDiv, expiryCardInput);
-  mount(cvvWrap, cvvInputCard);
+const maskExpiry = IMask(expiryCardInput, {
+  mask: "MM/YY",
+  blocks: {
+    MM: {
+      mask: IMask.MaskedRange,
+      from: 1,
+      to: 12,
+    },
+    YY: {
+      mask: IMask.MaskedRange,
+      from: 24,
+      to: 29,
+    },
+  },
+});
 
-  setChildren(cardPersonal, [cardName, cardDate]);
-  setChildren(cardInfo, [cardNumber, cardPersonal]);
-  setChildren(form, [holderWrapDiv, numberWrap, dateWrapDiv, cvvWrap, submitBtn]);
-  setChildren(card, [cardHeader, cardInfo, form]);
+expiryCardInput.addEventListener("input", (e) => {
+  e.preventDefault();
+  cardDate.textContent = expiryCardInput.value;
+});
 
-  cvvWrap.addEventListener('input', () => {
-    const cvvConsole = cvvWrap.value;
-  });
+IMask(cvvInputCard, { mask: "000" });
 
-  document.body.appendChild(wrapper);
+mount(wrapper, card);
+mount(holderWrapDiv, holderInput);
+mount(numberWrap, numberInput);
+mount(dateWrapDiv, expiryCardInput);
+mount(cvvWrap, cvvInputCard);
+
+setChildren(cardPersonal, [cardName, cardDate]);
+setChildren(cardInfo, [cardNumber, cardPersonal]);
+setChildren(form, [holderWrapDiv, numberWrap, dateWrapDiv, cvvWrap, submitBtn]);
+setChildren(card, [cardHeader, cardInfo, form]);
+
+cvvWrap.addEventListener("input", () => {
+  const cvvConsole = cvvWrap.value;
+});
+
+submitBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  alert("МЫ ПОПАЛИ В ПРОВЕРКУ!");
+
+  const holderValue = holderInput.value;
+  const numberValue = numberInput.value.replace(/s+/g, "");
+  const cvvValue = cvvInputCard.value;
+
+  let message = "";
+
+  if (!validateCardHolder(holderValue)) {
+    message += "Invalid Card Holder. ";
+    console.log("Invalid Card Holder");
+  }
+
+  if (!validateCardNumber(numberValue)) {
+    message += "Invalid Card Number. ";
+    console.log("Invalid Card Number");
+  }
+
+  if (!validateCVV(cvvValue)) {
+    message += "Invalid CVV. ";
+    console.log("Invalid CVV");
+  }
+
+  if (message === "") {
+    message = "Valid Data!";
+    console.log("Valid Data");
+  }
+
+  const messageElement = el("h2", message);
+  setChildren(card, [messageElement]);
+
+  setTimeout(() => {
+    card.removeChild(messageElement);
+  }, 2000);
+});
+
+mount(form, submitBtn);
+
+document.body.appendChild(wrapper);
