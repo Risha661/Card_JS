@@ -4,6 +4,8 @@ import {
   validateCardNumber,
 } from "./validate.js";
 
+import { el, mount, setChildren } from "redom";
+
 describe("Validation Tests", () => {
   test("validateCardHolder should return true for valid holders", () => {
     expect(validateCardHolder("John Doe")).toBe(true);
