@@ -1,4 +1,5 @@
 import { el, mount, setChildren } from "https://redom.js.org/redom.es.min.js";
+import { validateCVV, validateExpiry, validateHolder, validateNumber } from './js/validate.js';
 
   const wrapper = el('div', {className: 'wrapper'});
   const card = el('div', {className: 'card'});
@@ -68,6 +69,10 @@ import { el, mount, setChildren } from "https://redom.js.org/redom.es.min.js";
 
   const submitBtn = el('button', { className: 'form__button' }, 'CHECK OUT');
 
+  const postBtnValidate = el('button', {className: 'form__button'}, 'ОТПРАВИТЬ ДАННЫЕ');
+
+  const messageValidateText = el('h2', {className: 'card__text'}, '');
+
   const maskNumber = IMask(numberInput, {
     mask: '0000 0000 0000 0000',
     blocks: {
@@ -129,11 +134,29 @@ import { el, mount, setChildren } from "https://redom.js.org/redom.es.min.js";
 
   setChildren(cardPersonal, [cardName, cardDate]);
   setChildren(cardInfo, [cardNumber, cardPersonal]);
-  setChildren(form, [holderWrapDiv, numberWrap, dateWrapDiv, cvvWrap, submitBtn]);
-  setChildren(card, [cardHeader, cardInfo, form]);
+  setChildren(form, [holderWrapDiv, numberWrap, dateWrapDiv, cvvWrap, submitBtn, postBtnValidate]);
+  setChildren(card, [cardHeader, cardInfo, form, messageValidateText]);
 
   cvvWrap.addEventListener('input', () => {
     const cvvConsole = cvvWrap.value;
   });
+
+postBtnValidate.addEventListener('click', (e) => {
+  e.preventDefault();
+
+  const holderValid = validateHolder(holderInput.value.trim());
+  const cardNumberValid = validateNumber(numberInput.value);
+  const cvvValid = validateCVV(cvvInputCard.value);
+  const expiryValid = validateExpiry(expiryCardInput.value);
+
+  const allValid = holderValid && cardNumberValid && cvvValid && expiryValid;
+
+  messageValidateText.textContent = allValid ? 'Данные валидны' : 'Данные невалидны!';
+  messageValidateText.style.color = allValid ? 'green' : 'red';
+
+  setTimeout(() => {
+    messageValidateText.textContent = '';
+  }, 2000);
+});
 
   document.body.appendChild(wrapper);

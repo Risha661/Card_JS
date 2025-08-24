@@ -188,6 +188,16 @@
   cursor: pointer;
 }
 
+.form__button:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+.card__text {
+  margin-top: 5px;
+  color: green;
+  font-size: 14px;
+}
+
 .input__holder {
   padding: 19px 94px;
 }
