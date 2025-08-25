@@ -1,4 +1,4 @@
-import { el, mount, setChildren } from "redom";
+import { el, mount, setChildren } from "https://redom.js.org/redom.es.min.js";
 import { validateCVV, validateExpiry, validateHolder, validateNumber } from './js/validate.js';
 
   const wrapper = el('div', {className: 'wrapper'});
